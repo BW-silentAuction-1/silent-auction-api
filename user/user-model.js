@@ -6,9 +6,9 @@ const mapper = require("./map");
 
 module.exports = {
   add,
-  findBy,
-  findById,
   getProfile,
+  update,
+  remove
 };
 
 function findBy(filter) {
@@ -36,7 +36,8 @@ function getProfile(token) {
 //   .select("id", "username","first_name","last_name","email")
 //   .where("id",grab.userId)
     let query = db("user as u");
-    query.where("u.id",grab.userId).first();
+    query.select("id", "username","first_name","last_name","email")
+    .where("u.id",grab.userId).first();
 
     const promises = [query,getProfileAuctions(grab.userId),getProfileBids(grab.userId)];
 
@@ -65,4 +66,20 @@ function getProfile(token) {
     return db("auction_bids")
       .where("user_id", Id)
       .then(items => items.map(item => mapper.bidsToBody(item)));
+  }
+
+  function update(token, changes) {
+    var grab;
+    jwt.verify(token, secrets.jwtSecret, (error,decodedToken) => {
+            grab = decodedToken;
+    })
+    return db('user')
+      .where('id', grab.userId)
+      .update(changes);
+  }
+
+  function remove(token) {
+    return db('user')
+      .where('id', grab.userId)
+      .del();
   }
