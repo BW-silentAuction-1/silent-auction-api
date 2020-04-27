@@ -1,7 +1,16 @@
 module.exports = {
+    userToBody,
     auctionsToBody,
     bidsToBody
   };
+
+  function userToBody(user) {
+    const result = {
+      ...user,
+    };
+
+    return result;
+  }
   
   function auctionsToBody(auctions) {
     return {
