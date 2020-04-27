@@ -2,26 +2,21 @@
 exports.up = function(knex) {
   return knex.schema.createTable('user', tbl =>{
       tbl.increments();
-      tbl.string('username', 128)
-      tbl.notNullable()
-      tbl.unique();
+      tbl.string('username', 128).notNullable().unique();
 
-      tbl.string('password',128)
-      tbl.notNullable();
+      tbl.string('password',128).notNullable();
 
-      tbl.string('first_name',128)
-      tbl.notNullable();
+      tbl.string('first_name',128).notNullable();
 
-      tbl.string('last_name',128)
-      tbl.notNullable();
+      tbl.string('last_name',128).notNullable();
 
-      tbl.string('email', 128)
-      tbl.unique()
-      tbl.notNullable();
+      tbl.string('email', 128).unique().notNullable();
   })
+
   .createTable('auctions',tbl =>{
       tbl.increments()
       tbl.integer('user_id')
+      .unsigned()
       .notNullable()
       .references('id')
       .inTable('user');
@@ -34,15 +29,16 @@ exports.up = function(knex) {
       .notNullable();
     tbl.date('date_ending')
       .notNullable();
-    tbl.string('images', 500)
+    tbl.string('image', 500)
       .notNullable();
   })
   .createTable('auction_bids', tbl =>{
   tbl.increments();
   tbl.integer('user_id')
+    .unsigned()
     .notNullable()
     .references("id")
-    .inTable('users');
+    .inTable('user');
   tbl.integer('auction_id')
     .unsigned()
     .notNullable()
