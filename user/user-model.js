@@ -87,11 +87,14 @@ function getProfile(token) {
     jwt.verify(token, secrets.jwtSecret, (error,decodedToken) => {
             grab = decodedToken;
     })
-    
+    if(changes.password){
     const newChanges = {
         ...changes,
         password: bcrypt.hashSync(changes.password, 12)
     }
+        } else {
+            newChanges = changes;
+        }
     return db('user')
       .where('id', grab.userId)
       .update(newChanges);
