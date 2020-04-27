@@ -2,14 +2,28 @@ const db = require("../data/dbConfig.js");
 const jwt = require('jsonwebtoken');
 const secrets = require('../api/secrets.js')
 const mapper = require("./map");
-
+const bcrypt = require("bcryptjs");
 
 module.exports = {
   add,
+  find,
+  findBy,
   getProfile,
   update,
   remove
 };
+
+function find(token) {
+    var grab;
+    jwt.verify(token, secrets.jwtSecret, (error,decodedToken) => {
+            grab = decodedToken;
+    })
+
+  return db("user")
+  .select("id", "username")
+  
+
+}
 
 function findBy(filter) {
   return db("user").where(filter);
@@ -73,12 +87,22 @@ function getProfile(token) {
     jwt.verify(token, secrets.jwtSecret, (error,decodedToken) => {
             grab = decodedToken;
     })
+    
+    const newChanges = {
+        ...changes,
+        password: bcrypt.hashSync(changes.password, 12)
+    }
     return db('user')
       .where('id', grab.userId)
-      .update(changes);
+      .update(newChanges);
   }
 
   function remove(token) {
+    var grab;
+    jwt.verify(token, secrets.jwtSecret, (error,decodedToken) => {
+            grab = decodedToken;
+    })
+
     return db('user')
       .where('id', grab.userId)
       .del();

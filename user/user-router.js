@@ -30,4 +30,41 @@ router.get("/:id", (req, res) => {
   });
 //!!!!!!!!!!!!!!!!!!!!!!!
 
+router.put('/profile', (req, res) => {
+    const changes = req.body;
+    Users.update(req.headers.authorization,changes)
+    .then(() => {
+        res.status(200).json({ message: `info updated.` });
+    })
+    .catch(error => {
+      // log error to server
+      console.log(error);
+      res.status(500).json({
+        message: 'Error updating the user',
+      });
+    });
+  });
+
+  router.delete('/profile', (req, res) => {
+    Users.remove(req.headers.authorization)
+    .then(user => {
+      if (user.length == 0) {
+        res.status(404).json({
+          message: "No user Found"
+        });
+      } else {
+        res.status(200).json({
+          message: "User deleted"
+        });
+      }
+    })
+    .catch(error => {
+      // log error to server
+      console.log(error);
+      res.status(500).json({
+        message: 'Error removing the user',
+      });
+    });
+  });
+
 module.exports = router;
