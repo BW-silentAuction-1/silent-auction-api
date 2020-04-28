@@ -10,17 +10,17 @@ module.exports = {
 }
 
 function getAuction(id) {
-    return db('auctions for')
-        .join('users','users.id', 'auction.id')
-        .select('auction.id','auction.user_id', 'users.username-seller', 'users.first_name','auction.description', 'auction.starting_price','auction.date_starting', 'auction.date_ending', 'auction.image')
-        .where(`auction.id = ${id}`)
+  return db('auctions as auction ')
+  .join('user','user.id', 'auction.id')
+  .select('auction.id','auction.user_id', 'user.first_name','auction.item_description', 'auction.item_price','auction.date_started', 'auction.date_ending', 'auction.image')
+    .where('auction.id' ,id).first()
 }
 
 function getAll() {
-    return db('auctions for')
-        .join('users','users.id', 'auction.id')
-        .select('auction.id','auction.user_id', 'users.username-seller', 'users.first_name','auction.description', 'auction.starting_price','auction.date_starting', 'auction.date_ending', 'auction.image')
-        .where(`auction.id = ${id}`)
+    return db('auctions as auction ')
+        .join('user','user.id', 'auction.id')
+        .select('auction.id','auction.user_id', 'user.first_name','auction.item_description', 'auction.item_price','auction.date_started', 'auction.date_ending', 'auction.image')
+
 }
 
 function getHighestBid(auction_id) {
