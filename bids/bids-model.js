@@ -18,10 +18,10 @@ function getBid(id) {
 
 function getBidsByAuction(auction_id) {
   return db('auction_bids')
-    .where({auction_id})
+    .where('id',{auction_id})
     .orderBy('price')
-    .join('users', 'users.id', 'auction_bids.user_id')
-    .select('auction_bids.id', 'users.username', 'users.first_name', 'auction_bid.price', 'auction_bid.created_at')
+    .join('user', 'user.id', 'auction_bids.user_id')
+    .select('auction_bids.id', 'user.username', 'user.first_name', 'auction_bid.price', 'auction_bid.created_at')
 }
 
 function add(auction_id, token, price) {
