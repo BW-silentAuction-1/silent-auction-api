@@ -13,12 +13,12 @@ router.get('/', (req,res) => {
   })
 
   router.get('/:id', (req,res) => {
-    Auctions.getAuction(req.params.id)
+    Auctions.getAuction(req.params.id,req.headers.authorization)
       .then(auction => {
         if (auction) {
               res.status(200).json(auction);
         } else {
-          res.status(400).json({message: "No auction ID"})
+          res.status(400).json({message: "No auction with that ID"})
         }}
       )
       .catch(err => res.status(500).json({message: "Error receiving auction"}));

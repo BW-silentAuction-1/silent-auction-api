@@ -1,4 +1,8 @@
 const db = require('../data/dbConfig');
+const jwt = require('jsonwebtoken');
+const secrets = require('../api/secrets.js')
+const mapper = require('./auctionMap');
+
 
 module.exports = {
     getAuction,
@@ -9,17 +13,59 @@ module.exports = {
     remove
 }
 
-function getAuction(id) {
-  return db('auctions as auction ')
-  .join('user','user.id', 'auction.id')
-  .select('auction.id','auction.user_id', 'user.first_name','auction.item_description', 'auction.item_price','auction.date_started', 'auction.date_ending', 'auction.image')
-    .where('auction.id' ,id).first()
+function getAuction(auctionID,token) {
+
+    var grab;
+    jwt.verify(token, secrets.jwtSecret, (error,decodedToken) => {
+            grab = decodedToken;
+    })
+ 
+
+       let query = db("auctions as a")
+      .where("a.id",auctionID).first();
+      const promises = [query,getAuctionBids(auctionID),checkOwnership(auctionID)];
+      return Promise.all(promises).then(function(results) {
+          let [auction, bids,owner] = results;
+          if (auction && owner[0].user_id == grab.userId) {
+            auction.bids = bids;
+            return mapper.auctionsToBody(auction);
+          } else if (auction) {
+            return db("auctions as a")
+            .where("a.id",auctionID).first();
+          }
+          else {
+            return null
+          }
+        });
+
+
+      }
+
+
+
+function checkOwnership(auctionID){
+
+  return db('auctions as a')
+  .select('a.user_id')
+  .where('a.id',auctionID)
+  .then(items => items.map(item => mapper.getOwner(item)));
+
+
+}
+
+function getAuctionBids(Id) {
+  return db("auction_bids as ab")
+    .join('auctions as a','a.id','ab.auction_id')
+    .join('user as u','u.id','ab.user_id')
+    .select('ab.id','ab.auction_id','ab.price','ab.date_listed','u.username')
+    .where("ab.auction_id", Id)
+    .then(items => items.map(item => mapper.bidsToBody(item)));
 }
 
 function getAll() {
     return db('auctions as auction ')
         .join('user','user.id', 'auction.id')
-        .select('auction.id','auction.user_id', 'user.first_name','auction.item_description', 'auction.item_price','auction.date_started', 'auction.date_ending', 'auction.image')
+        .select('auction.id','auction.user_id', 'user.username','auction.item_description', 'auction.item_price','auction.date_started', 'auction.date_ending', 'auction.image')
 
 }
 
@@ -47,3 +93,5 @@ function add(auctions) {
       .where({id})
       .del();
   }
+
+

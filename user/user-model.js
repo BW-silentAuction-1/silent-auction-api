@@ -46,9 +46,6 @@ function getProfile(token) {
     jwt.verify(token, secrets.jwtSecret, (error,decodedToken) => {
             grab = decodedToken;
     })
-//   return db("user")
-//   .select("id", "username","first_name","last_name","email")
-//   .where("id",grab.userId)
     let query = db("user as u");
     query.select("id", "username","first_name","last_name","email")
     .where("u.id",grab.userId).first();
@@ -77,8 +74,10 @@ function getProfile(token) {
   }
 
   function getProfileBids(Id) {
-    return db("auction_bids")
-      .where("user_id", Id)
+    return db("auction_bids as ab")
+      .join('auctions as a','a.id','ab.auction_id')
+      .select('ab.id','ab.auction_id','ab.price','ab.date_listed','a.name')
+      .where("ab.user_id", Id)
       .then(items => items.map(item => mapper.bidsToBody(item)));
   }
 
