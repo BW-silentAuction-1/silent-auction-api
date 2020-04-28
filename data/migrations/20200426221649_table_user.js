@@ -25,7 +25,7 @@ exports.up = function(knex) {
       tbl.string('name', 128)
       .notNullable();
     tbl.string('item_description', 1000)
-    tbl.integer('item_price')
+    tbl.float('item_price')
       .notNullable();
     tbl.date('date_started')
       .notNullable();
@@ -50,7 +50,7 @@ exports.up = function(knex) {
     .inTable('auctions')
     .onDelete("RESTRICT")
     .onUpdate("CASCADE");
-  tbl.integer('price')
+  tbl.float('price')
     .unsigned()
     .notNullable();
   tbl.date('date_listed')
