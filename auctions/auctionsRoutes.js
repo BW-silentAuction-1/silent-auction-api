@@ -3,6 +3,7 @@ const express = require('express');
 const Auctions = require('./auctions-model');
 const Bids = require('../bids/bids-model')
 const router = express.Router();
+const moment = require("moment");
 
 router.get('/', (req,res) => {
     Auctions.getAll()
@@ -74,10 +75,10 @@ router.get('/', (req,res) => {
   function validateAuction(req, res, next) {
     const auction = req.body;
     if (auction) {
-      if (!auction.name || !auction.item_price || !auction.date_ending || !auction.image || !auction.date_started) {
-        res.status(400).json({message: "name, item_price, date_ending, date_started, and image URL is required."})
+      if (!auction.name || !auction.item_price || !auction.date_ending || !auction.image || auction.date_started) {
+        res.status(400).json({message: "name, item_price, date_ending, no date_started, and image URL is required."})
       } else {
-        req.auction = {...auction, user_id: req.decodedToken.userId}
+        req.auction = {...auction,date_started:moment.utc().format('YYYY-MM-DD HH:mm:ss'), user_id: req.decodedToken.userId}
         next();
       }
     } else {

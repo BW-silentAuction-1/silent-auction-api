@@ -1,5 +1,5 @@
 const express = require("express");
-
+const moment = require("moment");
 const Auctions = require("../auctions/auctions-model");
 const Bids = require("../bids/bids-model");
 const router = express.Router();
@@ -7,21 +7,21 @@ const router = express.Router();
 
 
 
-router.get("/:id", (req,res) => {
-  Bids.getBid(req.params.id)
-    .then(bid => {
-      if (bid) {
-        bid.created_at = new Date(bid.created_at);
-        res.status(201).json(bid);
-      } else {
-        res.status(404).json({message: "Cannot find bid with specified ID."});
-      }
-    })
-    .catch(err => res.status(500).json({message: "Error receiving auction"}));
-});
+// router.get("/:id", (req,res) => {
+//   Bids.getBid(req.params.id)
+//     .then(bid => {
+//       if (bid) {
+//         bid.created_at = new Date(bid.created_at);
+//         res.status(201).json(bid);
+//       } else {
+//         res.status(404).json({message: "Cannot find bid with specified ID."});
+//       }
+//     })
+//     .catch(err => res.status(500).json({message: "Error receiving auction"}));
+// });
 
-router.post("/:auction_id", [isBuyer, validateBid, findAuction, validDate, validPrice] , (req,res) => {
-  req.bid = {...bid, user_id: req.decoded.subject, auction_id: req.params.auction_id, created_at: new Date()}
+router.post("/auctions/:auction_id", [ isOwner,validateBid, findAuction, validDate, validPrice] , (req,res) => {
+  req.bid = {...req.bid,price:req.bid.price, user_id: req.decodedToken.userId, auction_id: req.params.auction_id, date_listed: moment.utc().format('YYYY-MM-DD HH:mm:ss')}
   Bids.add(req.bid)
     .then(id => res.status(201).json(id[0]))
     .catch(err => res.status(500).json({message: "Error adding to auction"}))
@@ -36,10 +36,10 @@ router.put("/:id", [authOwner, isLastBid, validateBid, findAuction, validDate, v
     .catch(err => res.status(500).json({message: "Error updating auction"}))
 });
 
-router.delete("/:id", [authOwner, isLastBid, findAuction, validDate], (req,res) => {
+router.delete("/:id", [authOwner, findAuction, validDate], (req,res) => {
   Bids.remove(req.params.id)
   .then(records => res.status(201).json({records}))
-  .catch(err => res.status(500).json({message: "Error deleting auction"}))
+  .catch(err => res.status(500).json({message: "Error deleting bid"}))
 });
 
 function isBuyer(req,res,next) {
@@ -54,7 +54,7 @@ function authOwner(req,res,next) {
   Bids.getBid(req.params.id)
     .then(bid => {
       if (bid) {
-        if (bid.user_id === req.decoded.subject) {
+        if (bid.user_id === req.decodedToken.userId) {
           req.bid = bid;
           next();
         } else {
@@ -87,7 +87,7 @@ function findAuction(req, res, next) {
         req.auction = auction;
         next();
       } else {
-        res.status(404).json({message: "Ausction ID not found."});
+        res.status(404).json({message: "Auction ID not found."});
       }
     })
 }
@@ -105,10 +105,10 @@ function validDate(req, res, next) {
 function validPrice(req, res, next) {
   Auctions.getHighestBid(req.auction.id)
     .then(auction => {
-      if (auction.price < req.bid.price) {
+      if (auction.price < req.bid.price || !auction.price) {
         next();
       } else {
-        res.status(400).json({message: "The bid is to low."})
+        res.status(400).json({message: "The bid is too low."})
       }
     })
     .catch(err => res.status(500).json({message: "Error receiving bid."}))
@@ -120,7 +120,18 @@ function isLastBid(req,res,next) {
       if (lastBid.id == req.params.id) {
         next();
       } else {
-        res.status(403).json({mesesage: "Bids are final."})
+        res.status(403).json({message: "Bids are final."})
+      }
+    })
+}
+
+function isOwner(req,res,next) {
+  Auctions.getAuction(req.params.auction_id)
+    .then(auction => {
+      if (auction.user_id !== req.decodedToken.userId) {
+        next();
+      } else {
+        res.status(403).json({message: "Can't bid on your own auction"})
       }
     })
 }

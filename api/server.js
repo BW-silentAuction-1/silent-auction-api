@@ -23,6 +23,6 @@ server.get("/", (req, res) => {
 server.use('/api/auth', authRouter);
 server.use('/api/users', authenticate, userRouter);
 server.use('/api/auctions', authenticate, auctionRouter);
-server.use('/api/bids', authenticate, bidRouter);
+server.use('/api/bid', authenticate, bidRouter);
 
 module.exports = server;

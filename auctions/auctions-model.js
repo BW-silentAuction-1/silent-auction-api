@@ -1,8 +1,6 @@
 const db = require('../data/dbConfig');
-const jwt = require('jsonwebtoken');
-const secrets = require('../api/secrets.js')
 const mapper = require('./auctionMap');
-
+const moment = require("moment");
 
 module.exports = {
     getAuction,
@@ -17,6 +15,8 @@ module.exports = {
 function getAuction(auctionID,userId) {
 
        let query = db("auctions as a")
+       .join('user','user.id', 'a.user_id')
+       .select('a.id','a.user_id', 'user.username','a.name','a.item_description', 'a.item_price','a.date_started', 'a.date_ending', 'a.image')
       .where("a.id",auctionID).first();
       const promises = [query,getAuctionBids(auctionID),checkOwnership(auctionID),getHighestBid(auctionID)];
       return Promise.all(promises).then(function(results) {
