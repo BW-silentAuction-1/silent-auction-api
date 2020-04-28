@@ -23,15 +23,16 @@ function getAuction(auctionID,token) {
 
        let query = db("auctions as a")
       .where("a.id",auctionID).first();
-      const promises = [query,getAuctionBids(auctionID),checkOwnership(auctionID)];
+      const promises = [query,getAuctionBids(auctionID),checkOwnership(auctionID),getHighestBid(auctionID)];
       return Promise.all(promises).then(function(results) {
-          let [auction, bids,owner] = results;
+          let [auction, bids,owner,highestBid] = results;
           if (auction && owner[0].user_id == grab.userId) {
             auction.bids = bids;
+            auction.highestBid = highestBid.price;
             return mapper.auctionsToBody(auction);
           } else if (auction) {
-            return db("auctions as a")
-            .where("a.id",auctionID).first();
+            auction.highestBid = highestBid.price;
+            return mapper.auctionsToBody(auction);
           }
           else {
             return null
@@ -62,6 +63,15 @@ function getAuctionBids(Id) {
     .then(items => items.map(item => mapper.bidsToBody(item)));
 }
 
+function getHighestBid(Id) {
+  return db ('auction_bids as ab')
+  .where('ab.auction_id',Id)
+  .orderBy('price','desc')
+  .select('ab.price')
+  .first()
+  .then(item => mapper.highestBidToBody(item))
+}
+
 function getAll() {
     return db('auctions as auction ')
         .join('user','user.id', 'auction.id')
@@ -69,13 +79,7 @@ function getAll() {
 
 }
 
-function getHighestBid(auction_id) {
-    return db ('bids')
-    .where({auction_id})
-    .orderBy('price')
-    .select('bids.price')
-    .first()
-}
+
 
 function add(auctions) {
     return db('auctions')

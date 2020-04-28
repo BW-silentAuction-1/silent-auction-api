@@ -2,7 +2,8 @@ module.exports = {
 
     auctionsToBody,
     bidsToBody,
-    getOwner
+    getOwner,
+    highestBidToBody
   };
 
   function auctionsToBody(auction) {
@@ -16,6 +17,12 @@ module.exports = {
   function bidsToBody(bids) {
     return {
       ...bids,
+    };
+  }
+
+  function highestBidToBody(highest) {
+    return {
+      ...highest,
     };
   }
 
