@@ -21,7 +21,7 @@ function getBidsByAuction(auction_id) {
     .where('id',{auction_id})
     .orderBy('price')
     .join('user', 'user.id', 'auction_bids.user_id')
-    .select('auction_bids.id', 'user.username', 'user.first_name', 'auction_bid.price', 'auction_bid.created_at')
+    .select('auction_bids.id', 'user.username', 'user.first_name', 'auction_bid.price', 'auction_bid.date_listed')
 }
 
 function add(auction_id, token, price) {

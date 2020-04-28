@@ -10,11 +10,10 @@ module.exports = (req,res,next) => {
     jwt.verify(token, secrets.jwtSecret, (error,decodedToken) => {
         if (!error) {
             req.decodedToken = decodedToken;
-            grab = decodedToken;
             next();
           } else {
             res.status(403).json({ error: "You must be logged in to do that." });
           }
     })
-    console.log(grab.username)
+
   };
