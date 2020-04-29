@@ -28,7 +28,7 @@ USER and AUTH ENDPOINTS
 
     !Data returned from GET request!
 
-{
+ {
     "id": 4,
     "username": "durgen23",
     "first_name": "Leif",
@@ -62,7 +62,7 @@ USER and AUTH ENDPOINTS
             "name": "Camera"
         }
     ]
-}
+ }
 
 [/] - PUT profile endpoint updates profile  "/api/users/profile"
 
