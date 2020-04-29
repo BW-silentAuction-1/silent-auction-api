@@ -15,6 +15,7 @@ USER and AUTH ENDPOINTS
 	}
 		
 [/] - POST Login endpoint "/api/auth/login"
+
     !Data shape to POST!
 	{
     	"username":"durgen25",
@@ -22,6 +23,7 @@ USER and AUTH ENDPOINTS
 	}
 
 [/] - GET Profile endpoint "/api/users/profile"	
+
     !Data returned from GET request!
 	{
     "id": 4,
@@ -60,6 +62,7 @@ USER and AUTH ENDPOINTS
 }
 
 [/] - PUT profile endpoint updates profile  "/api/users/profile"
+
         !Data shape to POST! all fields are optional!
         {
     	"username":"durgen25",
@@ -76,6 +79,7 @@ USER and AUTH ENDPOINTS
 AUCTION ENDPOINTS
 
 [/] - GET all auctions endpoint "api/auctions"
+
         !Only authorization needed!
         [
     {
@@ -114,6 +118,7 @@ AUCTION ENDPOINTS
 ]
 
 [/] - GET auction endpoint using ID, returns highestbid and will return an array of bids only if owner of auction "api/auctions/:id"
+
     !If user is owner GET will return:
     {
     "id": 1,
@@ -159,6 +164,7 @@ AUCTION ENDPOINTS
     }
 
 [/] - POST create an auction "api/auctions"
+
     !Data shape to POST!
     {
     "name":"Meat Loaf",
@@ -169,6 +175,7 @@ AUCTION ENDPOINTS
     }
 
 [/]  - PUT edit your auction "api/auctions/:id" disallow if not owner
+
     !Data shape to PUT! all fields are optional
     {
     "name":"Meat Loaf",
@@ -183,11 +190,13 @@ AUCTION ENDPOINTS
 BID ENDPOINTS
 
 [/] - POST add bid to an auction "api/bid/auctions/:id"
+
     !Sample data to post! Amount must be higher than highest bid and cant be posted on own auction
     {
     "price":300
     }
 
 [/] - DELETE delete your bid from auction "api/bid/:id"
+
     !Only authorization needed!
 
