@@ -93,15 +93,15 @@ node api for silent auction application
         !Only authorization needed!
 
         [
-    {
+     {
         "id": 1,
-        "user_id": 62,
+        "user_id": 1,
         "username": "Test1",
         "name": "Camera",
         "item_description": "Nikon digital camera",
         "item_price": 250,
-        "date_started": "2020-04-28 22:58:01",
-        "date_ending": "2020-04-30 16:40:23",
+        "date_started": "2020-04-28T22:58:01.000Z",
+        "date_ending": "2020-04-30T16:40:23.000Z",
         "image": "https://i.imgur.com/my9SknX.jpg"
     },
     {
@@ -111,8 +111,8 @@ node api for silent auction application
         "name": "Game console",
         "item_description": "Super Nintendo Entertainment System",
         "item_price": 39.99,
-        "date_started": "2020-04-26 12:58:01",
-        "date_ending": "2020-04-30 16:40:23",
+        "date_started": "2020-04-26T12:58:01.000Z",
+        "date_ending": "2020-04-30T16:40:23.000Z",
         "image": "https://i.imgur.com/2zJ2clW.jpg"
     },
     {
@@ -122,8 +122,8 @@ node api for silent auction application
         "name": "Guitar",
         "item_description": "Fender",
         "item_price": 300,
-        "date_started": "2020-04-27 16:34:01",
-        "date_ending": "2020-04-30 16:40:23",
+        "date_started": "2020-04-27T16:34:01.000Z",
+        "date_ending": "2020-04-30T16:40:23.000Z",
         "image": "https://i.imgur.com/zQyowDJ.jpg"
     }
 ]
