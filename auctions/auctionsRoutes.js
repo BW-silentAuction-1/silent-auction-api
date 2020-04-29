@@ -32,7 +32,7 @@ router.get('/', (req,res) => {
 
   router.put("/:id", authOwner, (req,res) => {
         const auction = req.body;
-        if(auction.date_started || auction.item_price || auction.date_ending){
+        if(auction.id||auction.date_started || auction.item_price || auction.date_ending){
           res.status(403).json({message: "You cannot modify that after auction starts"});
         }
         else{
