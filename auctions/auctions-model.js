@@ -60,12 +60,14 @@ function getAuctionBids(Id) {
 }
 
 function getHighestBid(Id) {
-  return db ('auction_bids as ab')
-  .where('ab.auction_id',Id)
-  .orderBy('price','desc')
+  
+  return db('auction_bids as ab','auctions as a')
   .select('ab.price')
+  .where('ab.auction_id',Id)
+  .orderBy('ab.price','desc')
   .first()
   .then(item => mapper.highestBidToBody(item))
+
 }
 
 function getAll() {
