@@ -61,11 +61,13 @@ function getAuctionBids(Id) {
 
 function getHighestBid(Id) {
   
-  return db('auction_bids as ab','auctions as a')
+  return db('auction_bids as ab')
   .select('ab.price')
-  .where('ab.auction_id',Id)
+  .from('auction_bids as ab')
+  .union(db.raw(`select a.item_price from auctions as a where a.id = ${Id}`))
   .orderBy('ab.price','desc')
   .first()
+  .where('ab.id',Id)
   .then(item => mapper.highestBidToBody(item))
 
 }
