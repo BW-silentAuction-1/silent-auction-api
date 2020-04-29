@@ -3,6 +3,7 @@ const express = require('express');
 const Auctions = require('./auctions-model');
 const Bids = require('../bids/bids-model')
 const router = express.Router();
+const moment = require("moment");
 
 router.get('/', (req,res) => {
     Auctions.getAll()
@@ -13,41 +14,35 @@ router.get('/', (req,res) => {
   })
 
   router.get('/:id', (req,res) => {
-    Auctions.getAuction(req.params.id)
+    Auctions.getAuction(req.params.id,req.decodedToken.userId)
       .then(auction => {
         if (auction) {
               res.status(200).json(auction);
         } else {
-          res.status(400).json({message: "No auction ID"})
+          res.status(400).json({message: "No auction with that ID"})
         }}
       )
       .catch(err => res.status(500).json({message: "Error receiving auction"}));
   });
 
-  router.post("/", [item_price, validateAuction] , (req,res) => {
+  router.post("/",  validateAuction , (req,res) => {
     Auctions.add(req.auction).then(id => res.status(201).json(id[0]))
       .catch(err => res.status(500).json({message: "Error receiving auction"}))
   });
 
-  router.put("/:id", [authOwner, validDate], (req,res) => {
-    const {user_id, id, ...rest} = req.body;
-    req.body = rest;
-    Bids.getBidsByAuction(req.params.id)
-      .then(bids => {
-       
-        if (bids.length) {
-          const {starting_price, name, date_starting, ...rest} = req.body;
-          req.body = rest;
+  router.put("/:id", authOwner, (req,res) => {
+        const auction = req.body;
+        if(auction.id||auction.date_started || auction.item_price || auction.date_ending){
+          res.status(403).json({message: "You cannot modify that after auction starts"});
         }
+        else{
         Auctions.edit(req.params.id, req.body)
         .then(records => res.status(201).json({records}))
-        .catch(err => res.status(500).json({message: "Error updating auction"}));
-      })
       .catch(err => res.status(500).json({message: "Error receiving auction"}));
+        }
   });
 
-  router.delete("/:id", [authOwner, validDate], (req,res) => {
-    Bids.getBidsByAuction(req.auction.id)
+  router.delete("/:id", authOwner, (req,res) => {
     Auctions.remove(req.params.id)
     .then(records => res.status(201).json({records}))
     .catch(err => res.status(500).json({message: "Error deleting auction"}))
@@ -62,10 +57,10 @@ router.get('/', (req,res) => {
   }
 
   function authOwner(req,res,next) {
-    Auctions.getAuction(req.params.id)
+    Auctions.checkAuction(req.params.id)
       .then(auction => {
         if (auction) {
-          if (auction.user_id === req.decoded.subject) {
+          if (auction[0].user_id === req.decodedToken.userId) {
             req.auction = auction;
             next();
           } else {
@@ -80,10 +75,10 @@ router.get('/', (req,res) => {
   function validateAuction(req, res, next) {
     const auction = req.body;
     if (auction) {
-      if (!auction.name || !auction.starting_price || !auction.date_ending || !auction.image || !auction.date_starting) {
-        res.status(400).json({message: "Name, starting price, end date, start date, and image URL is required."})
+      if (!auction.name || !auction.item_price || !auction.date_ending || !auction.image || auction.date_started) {
+        res.status(400).json({message: "name, item_price, date_ending, no date_started, and image URL is required."})
       } else {
-        req.auction = {...auction, user_id: req.decoded.subject}
+        req.auction = {...auction,date_started: moment().format('YYYY-MM-DDThh:mm:ss.sssZ'), user_id: req.decodedToken.userId}
         next();
       }
     } else {

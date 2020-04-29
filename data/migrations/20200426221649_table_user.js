@@ -20,16 +20,16 @@ exports.up = function(knex) {
       .notNullable()
       .references('id')
       .inTable('user')
-      .onDelete("RESTRICT")
+      .onDelete("CASCADE")
       .onUpdate("CASCADE");
       tbl.string('name', 128)
       .notNullable();
     tbl.string('item_description', 1000)
-    tbl.integer('item_price')
+    tbl.float('item_price')
       .notNullable();
-    tbl.date('date_started')
+    tbl.datetime('date_started')
       .notNullable();
-    tbl.date('date_ending')
+    tbl.datetime('date_ending')
       .notNullable();
     tbl.string('image', 500)
       .notNullable();
@@ -41,19 +41,19 @@ exports.up = function(knex) {
     .notNullable()
     .references("id")
     .inTable('user')
-    .onDelete("RESTRICT")
+    .onDelete("CASCADE")
     .onUpdate("CASCADE");
   tbl.integer('auction_id')
     .unsigned()
     .notNullable()
     .references("id")
     .inTable('auctions')
-    .onDelete("RESTRICT")
+    .onDelete("CASCADE")
     .onUpdate("CASCADE");
-  tbl.integer('price')
+  tbl.float('price')
     .unsigned()
     .notNullable();
-  tbl.date('date_listed')
+  tbl.datetime('date_listed')
     .notNullable();
 })
 };

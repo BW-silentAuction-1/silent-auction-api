@@ -4,7 +4,7 @@ const Users = require("./user-model.js");
 
 
 router.get("/profile", (req, res) => {
-    Users.getProfile(req.headers.authorization)
+    Users.getProfile(req.decodedToken.userId)
       .then(users => {
         res.json(users);
       })
@@ -13,7 +13,7 @@ router.get("/profile", (req, res) => {
 
 //!!!!!!!!!!!!!!!!!!!!!    remove these endpoints laterrrr
 router.get("/", (req, res) => {
-    Users.find(req.headers.authorization)
+    Users.find(req.decodedToken.userId)
       .then(users => {
         res.json(users);
       })
@@ -32,7 +32,8 @@ router.get("/:id", (req, res) => {
 
 router.put('/profile', (req, res) => {
     const changes = req.body;
-    Users.update(req.headers.authorization,changes)
+    if(!req.body.id){
+    Users.update(req.decodedToken.userId,changes)
     .then(() => {
         res.status(200).json({ message: `info updated.` });
     })
@@ -43,10 +44,13 @@ router.put('/profile', (req, res) => {
         message: 'Error updating the user',
       });
     });
+  } else {
+    res.status(401).json({ message: `Can't change user ID` });
+  }
   });
 
   router.delete('/profile', (req, res) => {
-    Users.remove(req.headers.authorization)
+    Users.remove(req.decodedToken.userId)
     .then(user => {
       if (user.length == 0) {
         res.status(404).json({

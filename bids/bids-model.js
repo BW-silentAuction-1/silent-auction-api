@@ -1,5 +1,4 @@
 const db = require("../data/dbConfig");
-const jwt = require('jsonwebtoken');
 
 module.exports = {
   getBidsByAuction,
@@ -21,15 +20,11 @@ function getBidsByAuction(auction_id) {
     .where('id',{auction_id})
     .orderBy('price')
     .join('user', 'user.id', 'auction_bids.user_id')
-    .select('auction_bids.id', 'user.username', 'user.first_name', 'auction_bid.price', 'auction_bid.created_at')
+    .select('auction_bids.id', 'user.username', 'user.first_name', 'auction_bid.price', 'auction_bid.date_listed')
 }
 
-function add(auction_id, token, price) {
-    var grab;
-    jwt.verify(token, secrets.jwtSecret, (error,decodedToken) => {
-            grab = decodedToken;
-    })
-    const bid = {auction_id: auction_id , price: price, user_id: grab.userId}
+function add(bid) {
+    
   return db('auction_bids')
     .insert(bid,['id'])
 }
@@ -44,7 +39,7 @@ function getLastBid(auction_id) {
 function edit(id, bid) {
   return db('auction_bids')
     .where({id})
-    .update({price: bid.price, created_at: bid.created_at})
+    .update({price: bid.price, date_listed: bid.date_listed})
 }
 
 function remove(id) {

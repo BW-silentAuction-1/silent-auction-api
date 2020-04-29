@@ -1,6 +1,4 @@
 const db = require("../data/dbConfig.js");
-const jwt = require('jsonwebtoken');
-const secrets = require('../api/secrets.js')
 const mapper = require("./map");
 const bcrypt = require("bcryptjs");
 
@@ -13,11 +11,7 @@ module.exports = {
   remove
 };
 
-function find(token) {
-    var grab;
-    jwt.verify(token, secrets.jwtSecret, (error,decodedToken) => {
-            grab = decodedToken;
-    })
+function find() {
 
   return db("user")
   .select("id", "username")
@@ -41,19 +35,13 @@ function findById(id) {
     .first();
 }
 
-function getProfile(token) {
-    var grab;
-    jwt.verify(token, secrets.jwtSecret, (error,decodedToken) => {
-            grab = decodedToken;
-    })
-//   return db("user")
-//   .select("id", "username","first_name","last_name","email")
-//   .where("id",grab.userId)
+function getProfile(userId) {
+
     let query = db("user as u");
     query.select("id", "username","first_name","last_name","email")
-    .where("u.id",grab.userId).first();
+    .where("u.id",userId).first();
 
-    const promises = [query,getProfileAuctions(grab.userId),getProfileBids(grab.userId)];
+    const promises = [query,getProfileAuctions(userId),getProfileBids(userId)];
 
     return Promise.all(promises).then(function(results) {
         let [user, auctions,bids] = results;
@@ -77,16 +65,15 @@ function getProfile(token) {
   }
 
   function getProfileBids(Id) {
-    return db("auction_bids")
-      .where("user_id", Id)
+    return db("auction_bids as ab")
+      .join('auctions as a','a.id','ab.auction_id')
+      .select('ab.id','ab.auction_id','ab.price','ab.date_listed','a.name')
+      .where("ab.user_id", Id)
       .then(items => items.map(item => mapper.bidsToBody(item)));
   }
 
-  function update(token, changes) {
-    var grab;
-    jwt.verify(token, secrets.jwtSecret, (error,decodedToken) => {
-            grab = decodedToken;
-    })
+  function update(userId, changes) {
+
     if(changes.password){
     const newChanges = {
         ...changes,
@@ -96,17 +83,14 @@ function getProfile(token) {
             newChanges = changes;
         }
     return db('user')
-      .where('id', grab.userId)
+      .where('id', userId)
       .update(newChanges);
   }
 
-  function remove(token) {
-    var grab;
-    jwt.verify(token, secrets.jwtSecret, (error,decodedToken) => {
-            grab = decodedToken;
-    })
+  function remove(userId) {
+
 
     return db('user')
-      .where('id', grab.userId)
+      .where('id', userId)
       .del();
   }
