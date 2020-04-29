@@ -4,6 +4,7 @@ node api for silent auction application
 USER and AUTH ENDPOINTS
 
 [/] - POST Register endpoint "/api/auth/register"
+
     !Data shape to POST!
 	{
     	"username":"durgen25",
