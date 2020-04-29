@@ -20,7 +20,7 @@ USER and AUTH ENDPOINTS
     !Data shape to POST!
 
 	{
-    	"username":"durgen25",
+     "username":"durgen25",
    	 "password":"hingadinga"
 	}
 
@@ -28,7 +28,7 @@ USER and AUTH ENDPOINTS
 
     !Data returned from GET request!
 
-	{
+{
     "id": 4,
     "username": "durgen23",
     "first_name": "Leif",
@@ -205,7 +205,7 @@ AUCTION ENDPOINTS
 [/] - POST add bid to an auction "api/bid/auctions/:id"
 
     !Sample data to post! Amount must be higher than highest bid and cant be posted on own auction
-    
+
     {
     "price":300
     }
