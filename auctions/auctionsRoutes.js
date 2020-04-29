@@ -78,7 +78,7 @@ router.get('/', (req,res) => {
       if (!auction.name || !auction.item_price || !auction.date_ending || !auction.image || auction.date_started) {
         res.status(400).json({message: "name, item_price, date_ending, no date_started, and image URL is required."})
       } else {
-        req.auction = {...auction,date_started: `${moment().format()}`, user_id: req.decodedToken.userId}
+        req.auction = {...auction,date_started: moment().format('YYYY-MM-DDThh:mm:ss.sssZ'), user_id: req.decodedToken.userId}
         next();
       }
     } else {
