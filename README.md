@@ -139,22 +139,22 @@ node api for silent auction application
     "name": "Camera",
     "item_description": "Nikon digital camera",
     "item_price": 250,
-    "date_started": "2020-04-28 22:58:01",
-    "date_ending": "2020-04-30 16:40:23",
+    "date_started": "2020-04-28T22:58:01.000Z",
+    "date_ending": "2020-04-30T16:40:23.000Z",
     "image": "https://i.imgur.com/my9SknX.jpg",
     "bids": [
         {
             "id": 3,
             "auction_id": 1,
             "price": 150,
-            "date_listed": "2020-04-28 16:42:54",
+            "date_listed": "2020-04-28T16:42:54.000Z",
             "username": "Test3"
         },
         {
             "id": 9,
             "auction_id": 1,
             "price": 244,
-            "date_listed": "2020-04-28 16:42:54",
+            "date_listed": "2020-04-29T15:54:22.000Z",
             "username": "Test3"
         }
     ],
@@ -170,8 +170,8 @@ node api for silent auction application
     "name": "Camera",
     "item_description": "Nikon digital camera",
     "item_price": 250,
-    "date_started": "2020-04-28 22:58:01",
-    "date_ending": "2020-04-30 16:40:23",
+    "date_started": "2020-04-28T22:58:01.000Z",
+    "date_ending": "2020-04-30T16:40:23.000Z",
     "image": "https://i.imgur.com/my9SknX.jpg",
     "highestBid": 250
     }
