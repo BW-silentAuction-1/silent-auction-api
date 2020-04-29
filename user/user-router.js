@@ -32,6 +32,7 @@ router.get("/:id", (req, res) => {
 
 router.put('/profile', (req, res) => {
     const changes = req.body;
+    if(!req.body.id){
     Users.update(req.decodedToken.userId,changes)
     .then(() => {
         res.status(200).json({ message: `info updated.` });
@@ -43,6 +44,9 @@ router.put('/profile', (req, res) => {
         message: 'Error updating the user',
       });
     });
+  } else {
+    res.status(401).json({ message: `Can't change user ID` });
+  }
   });
 
   router.delete('/profile', (req, res) => {
