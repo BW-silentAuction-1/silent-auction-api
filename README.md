@@ -1,7 +1,7 @@
 # silent-auction-api
 node api for silent auction application 
 
-USER and AUTH ENDPOINTS
+**USER and AUTH ENDPOINTS**
 
 [/] - POST Register endpoint "/api/auth/register"
 
@@ -81,7 +81,7 @@ USER and AUTH ENDPOINTS
 
         !Only authorization needed!
 
-AUCTION ENDPOINTS
+**AUCTION ENDPOINTS**
 
 [/] - GET all auctions endpoint "api/auctions"
 
@@ -200,7 +200,7 @@ AUCTION ENDPOINTS
     !Only authorization needed!
 
 
-    BID ENDPOINTS
+   **BID ENDPOINTS**
 
 [/] - POST add bid to an auction "api/bid/auctions/:id"
 
