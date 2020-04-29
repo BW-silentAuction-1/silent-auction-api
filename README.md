@@ -17,13 +17,18 @@ node api for silent auction application
 		
 [/] - POST Login endpoint "/api/auth/login"
 
-    !Data shape to POST!
+    	!Data shape to POST!
 
 	{
-     "username":"durgen25",
+     	"username":"durgen25",
    	 "password":"hingadinga"
 	}
 
+	!Data Returned!
+	{
+    "message": "Successfully Logged in!",
+    "token": 		"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEwLCJ1c2VybmFtZSI6ImNvb2wiLCJpYXQiOjE1ODgxODQ3MTQsImV4cCI6MTU4ODI3MTExNH0.UUcXub9lPuXOEYkMLeNG7OB4XL8z8psZEAeawY12Opo"
+	}
 [/] - GET Profile endpoint "/api/users/profile"	
 
     !Data returned from GET request!
