@@ -33,12 +33,13 @@ describe("server", function () {
  });
 
  describe("/api/auth/", function () {
+
     describe("auth/register", function () { 
         
       it("should return 201 created", function () {
         return request(server)
         .post("/api/auth/register")
-        .send({username: 'Jim', password: 'password', first_name: 'Jim', last_name:"Slim" ,email: 'testing@nice.com',})
+        .send({username: 'Jim112', password: 'password', first_name: 'Jim', last_name:"Slim" ,email: 'testing@nice.com',})
         .then(res => {
             console.log(res.body)
         expect(res.status).toBe(201);
