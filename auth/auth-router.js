@@ -25,7 +25,7 @@ Users.add(hashPass(creds))
     res.status(401).json({message: 'Error Logging in!'})});
 });
 
-router.post("/login", (req, res) => {
+router.post("/login",validateLogin, (req, res) => {
   let {username,password} = req.body;
 
 Users.findBy({username})
@@ -65,6 +65,19 @@ function validateUser(req, res, next) {
   const user = req.body;
   if (user) {
     if (!user.username || !user.password || !user.first_name || !user.last_name || !user.email) {
+      res.status(400).json({message: "Missing one of the required fields!"})
+    } else {
+      next();
+    }
+  } else {
+    res.status(400).json({message: "Body is required."})
+  }
+}
+
+function validateLogin(req, res, next) {
+  const user = req.body;
+  if (user) {
+    if (!user.username || !user.password) {
       res.status(400).json({message: "Missing one of the required fields!"})
     } else {
       next();
