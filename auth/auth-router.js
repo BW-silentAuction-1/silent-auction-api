@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const secrets = require('../api/secrets.js')
 const Users = require("../user/user-model.js");
 
-router.post("/register", (req, res) => {
+router.post("/register",validateUser, (req, res) => {
   const creds = req.body;
 
   function hashPass(creds) {
@@ -22,10 +22,10 @@ Users.add(hashPass(creds))
       res.status(201).json({message:'Successfully Registered!'})
   })
   .catch(err => {res.send(err);
-     console.log(err)});
+    res.status(401).json({message: 'Error Logging in!'})});
 });
 
-router.post("/login", (req, res) => {
+router.post("/login",validateLogin, (req, res) => {
   let {username,password} = req.body;
 
 Users.findBy({username})
@@ -59,6 +59,32 @@ function generateToken(user) {
 
 
 
+}
+
+function validateUser(req, res, next) {
+  const user = req.body;
+  if (user) {
+    if (!user.username || !user.password || !user.first_name || !user.last_name || !user.email) {
+      res.status(400).json({message: "Missing one of the required fields!"})
+    } else {
+      next();
+    }
+  } else {
+    res.status(400).json({message: "Body is required."})
+  }
+}
+
+function validateLogin(req, res, next) {
+  const user = req.body;
+  if (user) {
+    if (!user.username || !user.password) {
+      res.status(400).json({message: "Missing one of the required fields!"})
+    } else {
+      next();
+    }
+  } else {
+    res.status(400).json({message: "Body is required."})
+  }
 }
 
 
